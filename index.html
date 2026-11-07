@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SUNNY EDUCATION AI</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f1f5ff;color:#172554}
+header{background:#1456c5;color:white;text-align:center;padding:20px 10px}header h1{margin:0;font-size:24px}
+main{max-width:780px;margin:auto;padding:12px}.card{background:white;padding:16px;margin:12px 0;border-radius:14px;box-shadow:0 3px 12px #0001}
+h2{color:#1456c5}button,select,input{border:0;border-radius:9px;padding:12px;margin:5px;font-size:15px}
+button{background:#1456c5;color:white;cursor:pointer}button:disabled{opacity:.7}.back{background:#475569}
+.option{display:block;width:100%;text-align:left;background:#e8efff;color:#172554;margin:9px 0}.option.correct{background:#b8f5c8;color:#14532d}.option.wrong{background:#fecaca;color:#991b1b}
+select,input{width:100%;border:1px solid #cbd5e1;background:white}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.grid button{margin:0}
+.small{font-size:13px;color:#64748b;line-height:1.5}#timer{color:#dc2626;font-weight:bold;font-size:19px}
+.hidden{display:none}.video{position:relative;padding-top:56.25%;background:#0f172a;border-radius:12px;overflow:hidden}.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.teacher{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.avatar{width:100px;height:100px;border-radius:50%;display:grid;place-items:center;font-size:54px;background:linear-gradient(145deg,#7dd3fc,#2563eb);animation:float 1.8s infinite alternate}
+@keyframes float{to{transform:translateY(-6px)}}#lesson{background:#eff6ff;padding:12px;border-radius:10px;line-height:1.6;min-height:60px}
+footer{text-align:center;padding:20px;color:#64748b}
+</style>
+</head>
+<body>
+<header><h1>🎓 SUNNY EDUCATION AI</h1><p>Learn Today, Lead Tomorrow | आज सीखें, कल आगे बढ़ें</p></header>
+<main>
+<div id="app"></div>
+</main>
+<footer>SUNNY EDUCATION AI | Hindi + English Learning</footer>
+<script>
+const app=document.getElementById('app');
+let timer=null,current=0,points=0,time=0,answered=false,testQuestions=[],testCount=25,selectedExam='SSC CGL';
+function home(){clearInterval(timer);app.innerHTML=`
+<div class="card"><h2>Welcome to SUNNY EDUCATION AI</h2><p>अपनी पढ़ाई का सेक्शन चुनें। / Choose your learning section.</p>
+<div class="grid">
+<button onclick="school()">🏫 School</button><button onclick="college()">🎓 College / University</button>
+<button onclick="competitive()">🏆 Competitive Exams</button><button onclick="openTeacher()">🤖 AI Teacher</button>
+<button onclick="animationLearn()">🧩 Animation Learning</button><button onclick="startQuiz()">📝 Mock Test</button>
+</div></div>`;}
+function school(){app.innerHTML=`<div class="card"><h2>School Learning</h2><p>कक्षा चुनें:</p>${[6,7,8,9,10,11,12].map(n=>`<button onclick="topicSearch('Class ${n}')">Class ${n}</button>`).join('')}<button class="back" onclick="home()">⬅ Home</button></div>`;}
+function college(){app.innerHTML=`<div class="card"><h2>College / University</h2><button onclick="topicSearch('B.Voc Ag Tech')">B.Voc Ag Tech</button><button onclick="topicSearch('UG')">UG</button><button onclick="topicSearch('PG')">PG</button><button onclick="topicSearch('Vocational')">Vocational</button><button class="back" onclick="home()">⬅ Home</button></div>`;}
+function topicSearch(level){app.innerHTML=`<div class="card"><h2>${level} Learning</h2><input id="topicInput" placeholder="Topic या Chapter लिखें"><button onclick="ytSearch('${level} '+document.getElementById('topicInput').value+' Hindi lesson')">YouTube Class खोजें</button><button class="back" onclick="home()">⬅ Home</button></div>`;}
+function competitive(){app.innerHTML=`<div class="card"><h2>Competitive Exams</h2><button onclick="examList('SSC','CGL,CHSL,MTS,GD,CPO')">SSC</button><button onclick="examList('Railway','NTPC,Group D,ALP,Technician')">Railway</button><button onclick="examList('Banking','SBI PO,SBI Clerk,IBPS')">Banking</button><button onclick="examList('UPSC & PCS','UPSC,State PCS')">UPSC & PCS</button><button onclick="examList('Police & Defence','Police,NDA,CDS,CAPF')">Police & Defence</button><button class="back" onclick="home()">⬅ Home</button></div>`;}
+function examList(title,items){app.innerHTML=`<div class="card"><h2>${title}</h2>${items.split(',').map(x=>`<button onclick="selectedExam='${x}';videoSubjects()">${x}</button>`).join('')}<button class="back" onclick="competitive()">⬅ Back</button></div>`;}
+function videoSubjects(){app.innerHTML=`<div class="card"><h2>${selectedExam} Video Classes</h2><p>विषय चुनें:</p><div class="grid"><button onclick="videoChapters('Maths')">Maths</button><button onclick="videoChapters('Reasoning')">Reasoning</button><button onclick="videoChapters('English')">English</button><button onclick="videoChapters('GK GS')">GK / GS</button></div><button class="back" onclick="competitive()">⬅ Back</button></div>`;}
+function videoChapters(subject){let chapters=['Basics / मूल बातें','Chapter 1','Chapter 2','Chapter 3','Practice Questions'];app.innerHTML=`<div class="card"><h2>${selectedExam} – ${subject}</h2><p>Chapter चुनें:</p>${chapters.map(c=>`<button class="option" onclick="ytSearch('${selectedExam} ${subject} ${c} Hindi class')">${c} ▶</button>`).join('')}<p class="small">YouTube पर उपलब्ध क्लास खोजने के लिए बटन दबाएँ। वीडियो और चैनल YouTube के अनुसार बदल सकते हैं।</p><button class="back" onclick="videoSubjects()">⬅ Back</button></div>`;}
+function ytSearch(q){window.open('https://www.youtube.com/results?search_query='+encodeURIComponent(q),'_blank');}
+function openTeacher(){app.innerHTML=`<div class="card"><h2>🤖 SUNNY AI Teacher</h2><div class="teacher"><div class="avatar">👨‍🏫</div><b>Virtual Teacher</b></div><p class="small">Topic या सवाल लिखें। यह Demo उपलब्ध उदाहरणों को हिंदी आवाज़ में पढ़ेगा।</p><input id="teacherTopic" placeholder="जैसे Percentage, Photosynthesis, भारत"><button onclick="teach()">समझाओ / Explain</button><button class="back" onclick="stopVoice()">आवाज़ बंद करें</button><div id="lesson">नमस्ते! अपना सवाल लिखें।</div><p class="small">यह शुरुआती voice-demo है, पूरा generative AI नहीं। असली AI उत्तर और AI-generated video के लिए सुरक्षित AI सेवा/API जोड़ना जरूरी होगा।</p><button class="back" onclick="home()">⬅ Home</button></div>`;}
+function teach(){let t=document.getElementById('teacherTopic').value.trim();if(!t){alert('पहले Topic लिखें।');return;}let a=explain(t);document.getElementById('lesson').textContent=a;if('speechSynthesis'in window){speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(a);u.lang='hi-IN';u.rate=.92;speechSynthesis.speak(u);}else alert('इस ब्राउज़र में आवाज़ की सुविधा उपलब्ध नहीं है।');}
+function stopVoice(){if('speechSynthesis'in window)speechSynthesis.cancel();}
+function explain(t){let x=t.toLowerCase();
+if(x.includes('percentage')||x.includes('प्रतिशत'))return 'प्रतिशत का अर्थ है सौ में से हिस्सा। उदाहरण: 200 का 10 प्रतिशत निकालने के लिए 200 गुणा 10 करके 100 से भाग दें। उत्तर 20 है।';
+if(x.includes('photosynthesis')||x.includes('प्रकाश संश्लेषण'))return 'प्रकाश संश्लेषण वह प्रक्रिया है जिसमें हरे पौधे सूर्य के प्रकाश की सहायता से पानी और कार्बन डाइऑक्साइड से भोजन बनाते हैं और ऑक्सीजन छोड़ते हैं।';
+if(x.includes('average')||x.includes('औसत'))return 'औसत निकालने के लिए सभी संख्याओं को जोड़कर कुल संख्याओं की गिनती से भाग देते हैं। उदाहरण: 2, 4, 6 का औसत 4 है।';
+if(x.includes('भारत')||x.includes('india'))return 'भारत दक्षिण एशिया में स्थित है। इसकी राजधानी नई दिल्ली है। भारत का संविधान 26 जनवरी 1950 को लागू हुआ।';
+return 'इस विषय को समझने के लिए पहले इसकी परिभाषा पढ़ें, फिर उदाहरण देखें और अभ्यास करें। यह Demo अभी हर विषय का पूरा AI उत्तर नहीं बना सकता। आप इस विषय की वीडियो क्लास भी खोज सकते हैं।';}
+function animationLearn(){app.innerHTML=`<div class="card"><h2>🧩 Animation Learning</h2><div style="height:150px;background:#e0f2fe;border-radius:12px;display:grid;place-items:center;font-size:48px"><span style="animation:float 1s infinite alternate">⚙️ 🌱 🧠</span></div><p>यह शुरुआती animation demo है। मशीन, पौधे, विज्ञान और शरीर जैसे विषयों के लिए 3D/animation वीडियो खोजें।</p><input id="animTopic" placeholder="जैसे Motor working, Photosynthesis"><button onclick="ytSearch(document.getElementById('animTopic').value+' 3D animation Hindi')">Animation Video खोजें</button><button class="back" onclick="home()">⬅ Home</button></div>`;}
+
+/* 100 bilingual practice questions: 25 Maths, 25 Reasoning, 25 GK, 25 English */
+const raw=[
+["40 का 25% कितना है?","5|10|15|20",1,"40 × 25 ÷ 100 = 10."],
+["18 × 5 कितना है?","80|85|90|95",2,"18 × 5 = 90."],
+["200 का 15% कितना है?","20|25|30|35",2,"200 × 15 ÷ 100 = 30."],
+["13 का वर्ग क्या है?","156|169|179|196",1,"13 × 13 = 169."],
+["80 का 3/4 कितना है?","40|50|60|70",2,"80 × 3 ÷ 4 = 60."],
+["144 का वर्गमूल क्या है?","10|11|12|14",2,"12 × 12 = 144."],
+["12 और 18 का LCM क्या है?","24|30|36|48",2,"LCM = 36."],
+["24 और 36 का HCF क्या है?","6|8|12|18",2,"HCF = 12."],
+["₹500 पर 10% छूट के बाद मूल्य?","₹400|₹450|₹475|₹490",1,"500 - 50 = ₹450."],
+["5, 10 और 15 का औसत?","5|10|15|20",1,"30 ÷ 3 = 10."],
+["2 घंटे में कितने मिनट?","60|90|120|180",2,"2 × 60 = 120."],
+["एक दर्जन में कितनी वस्तुएँ?","10|12|15|20",1,"एक दर्जन में 12 वस्तुएँ होती हैं।"],
+["7 × 8 कितना है?","48|54|56|64",2,"7 × 8 = 56."],
+["1 किलोमीटर में कितने मीटर?","100|500|1000|1500",2,"1 km = 1000 m."],
+["1000 का 5% कितना है?","5|25|50|100",2,"1000 × 5 ÷ 100 = 50."],
+["यदि x + 5 = 12, तो x?","5|6|7|8",2,"12 - 5 = 7."],
+["त्रिभुज के कोणों का योग?","90°|180°|270°|360°",1,"योग 180° होता है।"],
+["₹1000 पर 10% दर से 1 वर्ष का साधारण ब्याज?","₹50|₹100|₹150|₹200",1,"SI = PRT/100 = ₹100."],
+["5 cm भुजा वाले वर्ग का परिमाप?","10 cm|15 cm|20 cm|25 cm",2,"4 × 5 = 20 cm."],
+["8 × 4 आयत का क्षेत्रफल?","12|24|32|36",2,"8 × 4 = 32."],
+["3² + 4² कितना है?","12|20|25|49",2,"9 + 16 = 25."],
+["0.5 को भिन्न में लिखें।","1/2|1/3|1/4|2/3",0,"0.5 = 1/2."],
+["60 का 1/3 कितना है?","10|15|20|30",2,"60 ÷ 3 = 20."],
+["5 पेन ₹50 के हैं, 1 पेन का मूल्य?","₹5|₹10|₹15|₹20",1,"50 ÷ 5 = ₹10."],
+["999 के बाद कौन-सी संख्या?","998|1000|1001|990",1,"999 के बाद 1000 आता है."],
+
+["श्रृंखला: 2, 4, 8, 16, ?","20|24|30|32",3,"हर संख्या दोगुनी है।"],
+["अलग शब्द चुनें।","Apple|Mango|Potato|Banana",2,"आलू सब्जी है, बाकी फल हैं।"],
+["यदि A=1, तो D=?","2|3|4|5",2,"D वर्णमाला का चौथा अक्षर है।"],
+["North की विपरीत दिशा?","East|West|South|North-East",2,"North के विपरीत South है।"],
+["श्रृंखला: 3, 6, 9, 12, ?","13|14|15|18",2,"हर बार 3 जोड़ें।"],
+["सोमवार के दो दिन बाद कौन-सा दिन?","Tuesday|Wednesday|Thursday|Friday",1,"बुधवार।"],
+["अलग संख्या चुनें।","2|4|6|9",3,"9 विषम संख्या है।"],
+["A, C, E, G, ?","H|I|J|K",1,"अगला अक्षर I है।"],
+["एक सप्ताह में कितने दिन?","5|6|7|8",2,"7 दिन।"],
+["1=3, 2=6, 3=9, तो 4=?","10|11|12|13",2,"संख्या को 3 से गुणा किया गया है।"],
+["अलग चुनें।","Car|Bus|Train|Apple",3,"Apple फल है, बाकी वाहन हैं।"],
+["एक घंटे में कितने मिनट?","30|45|60|90",2,"60 मिनट।"],
+["श्रृंखला: 10, 20, 30, 40, ?","45|50|55|60",1,"हर बार 10 जोड़ें।"],
+["Day का विपरीत?","Morning|Night|Evening|Sun",1,"Night."],
+["सभी गुलाब फूल हैं। गुलाब क्या हैं?","Animals|Flowers|Birds|Trees",1,"गुलाब फूल हैं।"],
+["श्रृंखला: 1, 4, 9, 16, ?","20|24|25|36",2,"ये वर्ग संख्याएँ हैं; अगला 25।"],
+["एक वर्ष में कितने महीने?","10|11|12|13",2,"12 महीने।"],
+["अलग चुनें।","Monday|Tuesday|January|Friday",2,"January महीना है।"],
+["SOUTH को उल्टा लिखने पर पहला अक्षर?","S|H|T|U",1,"HTUOS का पहला अक्षर H है।"],
+["श्रृंखला: 100, 90, 80, 70, ?","50|55|60|65",2,"हर बार 10 घटाएँ।"],
+["एक दर्जन केले और एक दर्जन आम कुल?","12|18|24|30",2,"12 + 12 = 24."],
+["कम से कम 28 दिन किस महीने में होते हैं?","February only|April only|All months|June only",2,"सभी महीनों में कम से कम 28 दिन होते हैं।"],
+["श्रृंखला: Z, Y, X, W, ?","U|V|T|S",1,"उल्टे क्रम में अगला V है।"],
+["5 लोग 5 दिन में काम करते हैं। समान काम 1 व्यक्ति कितने दिन में करेगा?","5|10|20|25",3,"कुल काम 25 व्यक्ति-दिन है।"],
+["पिता की बहन को क्या कहते हैं?","मौसी|बुआ|चाची|मामी",1,"पिता की बहन बुआ होती हैं।"],
+
+["भारत की राजधानी?","Mumbai|New Delhi|Jaipur|Agra",1,"नई दिल्ली।"],
+["भारत का संविधान कब लागू हुआ?","15 August 1947|26 January 1950|2 October 1950|26 November 1949",1,"26 जनवरी 1950।"],
+["भारत के प्रथम प्रधानमंत्री?","Sardar Patel|Jawaharlal Nehru|Lal Bahadur Shastri|Rajendra Prasad",1,"जवाहरलाल नेहरू।"],
+["भारत का राष्ट्रीय पशु?","Lion|Elephant|Tiger|Deer",2,"बाघ।"],
+["भारत का राष्ट्रीय पक्षी?","Parrot|Peacock|Eagle|Sparrow",1,"मोर।"],
+["लाल ग्रह किसे कहते हैं?","Earth|Mars|Venus|Jupiter",1,"मंगल ग्रह।"],
+["सबसे बड़ा महासागर?","Indian|Atlantic|Arctic|Pacific",3,"प्रशांत महासागर।"],
+["सूर्य के सबसे निकट ग्रह?","Venus|Earth|Mercury|Mars",2,"बुध ग्रह।"],
+["प्रकाश संश्लेषण में पौधे कौन-सी गैस लेते हैं?","Oxygen|Carbon dioxide|Nitrogen|Hydrogen",1,"कार्बन डाइऑक्साइड।"],
+["भारत का राष्ट्रीय गान किसने लिखा?","Mahatma Gandhi|Rabindranath Tagore|Bankim Chandra|Premchand",1,"रवीन्द्रनाथ टैगोर।"],
+["विश्व पर्यावरण दिवस कब?","5 June|15 August|2 October|22 April",0,"5 जून।"],
+["ताजमहल कहाँ है?","Delhi|Agra|Jaipur|Lucknow",1,"आगरा।"],
+["क्षेत्रफल के अनुसार भारत का सबसे बड़ा राज्य?","Uttar Pradesh|Madhya Pradesh|Rajasthan|Maharashtra",2,"राजस्थान।"],
+["भारत की मुद्रा?","Dollar|Rupee|Pound|Yen",1,"रुपया।"],
+["पृथ्वी का प्राकृतिक उपग्रह?","Sun|Moon|Mars|Venus",1,"चंद्रमा।"],
+["भारत में स्वतंत्रता दिवस कब?","26 January|15 August|2 October|14 November",1,"15 अगस्त।"],
+["गांधी जयंती कब?","2 October|5 September|14 November|26 January",0,"2 अक्टूबर।"],
+["रक्त पंप करने वाला अंग?","Lungs|Brain|Heart|Kidney",2,"हृदय।"],
+["पानी का रासायनिक सूत्र?","CO2|H2O|O2|NaCl",1,"H2O."],
+["भारत का राष्ट्रीय फूल?","Rose|Lotus|Sunflower|Lily",1,"कमल।"],
+["नीला ग्रह किसे कहते हैं?","Mars|Earth|Saturn|Mercury",1,"पृथ्वी।"],
+["भारतीय संसद के कितने सदन हैं?","One|Two|Three|Four",1,"लोकसभा और राज्यसभा।"],
+["भारत का राष्ट्रीय वृक्ष?","Neem|Banyan|Mango|Peepal",1,"बरगद।"],
+["सबसे छोटा महाद्वीप?","Asia|Africa|Australia|Europe",2,"ऑस्ट्रेलिया।"],
+["भारत के प्रथम राष्ट्रपति?","Dr Rajendra Prasad|Dr Radhakrishnan|Nehru|Patel",0,"डॉ. राजेंद्र प्रसाद।"],
+
+["Brave का समानार्थी शब्द?","Cowardly|Courageous|Weak|Lazy",1,"Courageous का अर्थ बहादुर है।"],
+["Ancient का विलोम?","Old|Historic|Modern|Past",2,"Modern का अर्थ आधुनिक है।"],
+["Child का plural?","Childs|Childes|Children|Childrens",2,"Children."],
+["Go का past tense?","Goed|Gone|Going|Went",3,"Went."],
+["सही spelling चुनें।","Beautifull|Beutiful|Beautiful|Beatiful",2,"Beautiful सही spelling है।"],
+["Happy का समानार्थी?","Sad|Angry|Glad|Tired",2,"Glad का अर्थ प्रसन्न है।"],
+["Hot का विलोम?","Warm|Cold|Heat|Fire",1,"Cold."],
+["सही वाक्य चुनें।","He are a student.|He is a student.|He am a student.|He be a student.",1,"He के साथ is आता है।"],
+["Honesty कौन-सा शब्द है?","Verb|Noun|Adjective|Adverb",1,"Honesty एक abstract noun है।"],
+["Quickly कौन-सा शब्द है?","Noun|Verb|Adverb|Pronoun",2,"Quickly एक adverb है।"],
+["Book का plural?","Bookes|Books|Bookies|Book",1,"Books."],
+["Big का comparative?","Biger|Biggest|Bigger|More big",2,"Bigger."],
+["I ___ a student.","is|am|are|be",1,"I के साथ am आता है।"],
+["They ___ playing.","is|am|are|was",2,"They के साथ are आता है।"],
+["Mouse का plural?","Mouses|Mice|Mices|Mouse",1,"Mice."],
+["Beautiful का अर्थ?","सुंदर|कठिन|तेज|बुरा",0,"Beautiful का अर्थ सुंदर है।"],
+["Begin का समानार्थी?","End|Start|Stop|Close",1,"Start का अर्थ शुरू करना है।"],
+["Early का विलोम?","Soon|Late|Fast|Quick",1,"Late."],
+["She ___ to school daily.","go|going|goes|gone",2,"She के साथ goes आता है।"],
+["Man का plural?","Mans|Men|Manses|Man",1,"Men."],
+["Honest से पहले कौन-सा article?","A|An|The only|No article",1,"Honest में h silent है, इसलिए An।"],
+["Slowly का अर्थ?","तेजी से|धीरे-धीरे|ऊपर|नीचे",1,"धीरे-धीरे।"],
+["Write का past tense?","Writed|Written|Wrote|Writing",2,"Wrote."],
+["Kind का अर्थ?","दयालु|क्रोधित|कमजोर|धीमा",0,"Kind का अर्थ दयालु है।"],
+["Ram plays cricket. इसमें noun?","Plays|Ram|The|None",1,"Ram व्यक्ति का नाम है, इसलिए noun है।"]
+];
+const questions=raw.map(x=>({q:x[0],o:x[1].split('|'),a:x[2],w:x[3]}));
+function startQuiz(){clearInterval(timer);app.innerHTML=`<div class="card"><h2>Mock Test Settings / परीक्षा सेटिंग</h2><p>परीक्षा चुनें:</p><select id="exam"><option>SSC CGL</option><option>SSC CHSL</option><option>SSC MTS</option><option>SSC GD</option><option>Railway NTPC</option><option>Railway Group D</option><option>Banking</option></select><p>प्रश्नों की संख्या:</p><select id="questionCount"><option value="10">10 Questions</option><option value="25">25 Questions</option><option value="50">50 Questions</option><option value="100">100 Questions</option></select><p class="small">हर प्रश्न के लिए 1 मिनट। गलत उत्तर पर कोई negative marking नहीं।</p><button onclick="beginQuiz()">Start Test</button><button class="back" onclick="home()">⬅ Home</button></div>`;}
+function beginQuiz(){clearInterval(timer);selectedExam=document.getElementById('exam').value;testCount=Number(document.getElementById('questionCount').value);testQuestions=[...questions].sort(()=>Math.random()-.5).slice(0,testCount);current=0;points=0;time=testCount*60;showQuestion();timer=setInterval(()=>{time--;let e=document.getElementById('timer');if(e)e.textContent='समय / Time: '+Math.floor(time/60)+':'+String(time%60).padStart(2,'0');if(time<=0)finishQuiz();},1000);}
+function showQuestion(){answered=false;let q=testQuestions[current];app.innerHTML=`<div class="card"><b>${selectedExam} Mock Test</b><p id="timer">समय / Time: ${Math.floor(time/60)}:${String(time%60).padStart(2,'0')}</p><p>Question ${current+1} of ${testCount}</p><h2>${q.q}</h2>${q.o.map((x,i)=>`<button class="option" onclick="checkAnswer(${i})">${String.fromCharCode(65+i)}. ${x}</button>`).join('')}<p id="feedback"></p><button id="next" onclick="nextQuestion()" style="display:none">Next / अगला</button></div>`;}
+function checkAnswer(i){if(answered)return;answered=true;let q=testQuestions[current];document.querySelectorAll('.option').forEach((b,n)=>{b.disabled=true;if(n===q.a)b.classList.add('correct');if(n===i&&i!==q.a)b.classList.add('wrong');});if(i===q.a)points++;document.getElementById('feedback').innerHTML=(i===q.a?'✅ सही उत्तर':'❌ गलत उत्तर')+'<br><b>व्याख्या:</b> '+q.w;document.getElementById('next').style.display='inline-block';}
+function nextQuestion(){current++;if(current<testQuestions.length)showQuestion();else finishQuiz();}
+function finishQuiz(){clearInterval(timer);let p=Math.round(points/testCount*100);app.innerHTML=`<div class="card"><h2>परीक्षा पूरी हुई / Test Completed!</h2><h1>${points} / ${testCount}</h1><h2>${p}%</h2><p>सही उत्तर: ${points}</p><p>गलत या छोड़े गए: ${testCount-points}</p><p>${p>=80?'बहुत अच्छा!':p>=50?'अच्छा प्रयास!':'अभ्यास जारी रखें!'}</p><button onclick="startQuiz()">Try Again</button><button class="back" onclick="home()">Home</button></div>`;}
+home();
+</script>
+</body>
+</html>
